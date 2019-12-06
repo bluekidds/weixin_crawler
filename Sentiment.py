@@ -147,8 +147,13 @@ def get_sentiment(start, end, wanted_word, dbutils, GET_KEYWORDS):
 
     print('Work done... Saving...')
 
+
     hr_final.set_index("_id", inplace = True)
-    hr_final.to_csv(os.path.join(base_path, export_dir + "/" + str(start) + "~" + str(end) + '_sentiment.csv'))
+    hr_final.to_csv(os.path.join(base_path, export_dir + "/" + str(start) + "~" + str(end) + '_sentiment.csv'), index=0)
+
     if GET_KEYWORDS:
         keyword_final = hr_final.loc[keyword_ids]
         keyword_final.to_csv(os.path.join(base_path, export_dir + "/" + str(start) + "~" + str(end) + '_sentiment_keyword.csv'))
+
+    
+    

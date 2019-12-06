@@ -205,5 +205,5 @@ if __name__ == '__main__':
 
 	os.remove(os.path.join(base_path, "output.csv"))
 	os.remove(os.path.join(base_path, "keywords_output.csv"))
-	print('Starting to send mail')
+
 	Send_Mail(start, end)

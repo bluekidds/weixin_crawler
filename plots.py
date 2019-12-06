@@ -35,7 +35,8 @@ def get_week_count_plot(df, start, end):
     dt = list()
     res = list()
     while True:
-        if now == end:
+        print('Running to.. '+ str(now))
+        if now >= end:
             break
         df2 = df.loc[(df["date"] >= pd.Timestamp(now)) & (df["date"] < pd.Timestamp(now + timedelta(weeks = 1)))]
         res.append(df2.shape[0])
@@ -43,7 +44,8 @@ def get_week_count_plot(df, start, end):
         now += timedelta(weeks = 1)
 
 
-    index = pd.date_range(start = str(start), end = str(end - timedelta(days = 7)), freq = "W")
+    #index = pd.date_range(start = str(start), end = str(end - timedelta(days = 7)), freq = "W")
+    index = pd.date_range(start = str(start), end = str(end), freq = "W")
     index = [pd.to_datetime(date, format='%d-%m-%Y').date() for date in index]
         
     results = pd.DataFrame({
@@ -72,24 +74,38 @@ def get_week_countrate_plot(df, start, end):
     license_list = list()
     now = start
     while True:
-        if now == end:
+        print('Running to.. '+ str(now))
+        if now >= end:
             break
+        
+        
         all_df = df.loc[(df["date"] >= pd.Timestamp(now)) & (df["date"] < pd.Timestamp(now + timedelta(weeks = 1)))]
+        
         total = all_df.shape[0]
         official = all_df.loc[df["official"] == 1].shape[0]
         forprofit = all_df.loc[df["forprofit"] == 1].shape[0]
         license = all_df.loc[df["license"] == 1].shape[0]
         
+        if total == 0:
+            print('Found total = 0 in ' + str(now))
+            official_list.append(0)
+            forprofit_list.append(0)
+            license_list.append(0)
+        else:
         
-        
-        official_list.append(official/total)
-        forprofit_list.append(forprofit/total)
-        license_list.append(license/total)
+            official_list.append(official/total)
+            forprofit_list.append(forprofit/total)
+            license_list.append(license/total)
         dt.append(str(now))
         now += timedelta(weeks = 1)
     
-    index = pd.date_range(start = str(start), end = str(end - timedelta(days = 7)), freq = "W")
+    #index = pd.date_range(start = str(start), end = str(end - timedelta(days = 7)), freq = "W")
+    index = pd.date_range(start = str(start), end = str(end), freq = "W")
     index = [pd.to_datetime(date, format='%d-%m-%Y').date() for date in index]
+    print(len(official_list))
+    print(forprofit_list)
+    print(index)
+    print(len(index), len(forprofit_list))
     results = pd.DataFrame({
             "商業號/全部": forprofit_list,
             "官方/全部": official_list,
@@ -117,21 +133,38 @@ def get_week_ratio_plot(df, start, end):
     license_list = list()
     now = start
     while True:
-        if now == end:
+        if now >= end:
             break
         all_df = df.loc[(df["date"] >= pd.Timestamp(now)) & (df["date"] < pd.Timestamp(now + timedelta(weeks = 1)))]
         total = all_df.shape[0]
-        official = all_df.loc[df["official"] == 1].shape[0]
-        forprofit = all_df.loc[df["forprofit"] == 1].shape[0]
-        license = all_df.loc[df["license"] == 1].shape[0]
         
-        official_list.append(official/(total - official))
-        forprofit_list.append(forprofit/(total - forprofit))
-        license_list.append(license/(total - license))
+        if total == 0:
+            print('Found total = 0 in ' + str(now))
+            official_list.append(0)
+            forprofit_list.append(0)
+            license_list.append(0)
+        else:
+        
+            official = all_df.loc[df["official"] == 1].shape[0]
+            forprofit = all_df.loc[df["forprofit"] == 1].shape[0]
+            license = all_df.loc[df["license"] == 1].shape[0]
+        
+            official_list.append(official/(total - official))
+            forprofit_list.append(forprofit/(total - forprofit))
+            license_list.append(license/(total - license))
+        
+        #official = all_df.loc[df["official"] == 1].shape[0]
+        #forprofit = all_df.loc[df["forprofit"] == 1].shape[0]
+        #license = all_df.loc[df["license"] == 1].shape[0]
+        
+        #official_list.append(official/(total - official))
+        #forprofit_list.append(forprofit/(total - forprofit))
+        #license_list.append(license/(total - license))
         dt.append(str(now))
         now += timedelta(weeks = 1)
     
-    index = pd.date_range(start = str(start), end = str(end - timedelta(days = 7)), freq = "W")
+    #index = pd.date_range(start = str(start), end = str(end - timedelta(days = 7)), freq = "W")
+    index = pd.date_range(start = str(start), end = str(end), freq = "W")
     index = [pd.to_datetime(date, format='%d-%m-%Y').date() for date in index]
     results = pd.DataFrame({
             "商業號/非商業號": forprofit_list,
@@ -156,20 +189,21 @@ def get_week_ratio_plot(df, start, end):
 
 
 if __name__ == '__main__':
-
+    args = parser.parse_args()
     start_str = args.start.split("-")
     end_str = args.end.split("-")
     data_path = args.data
     start = date(int(start_str[0]), int(start_str[1]), int(start_str[2]))
     end = date(int(end_str[0]), int(end_str[1]), int(end_str[2]))
 
-    if not os.exists(os.path.join(base_path, output_path)):
+    if not os.path.exists(os.path.join(base_path, output_path)):
         os.mkdir(os.path.join(base_path, output_path))
 
     df = pd.read_csv(os.path.join(base_path, data_path), encoding = "utf-8", index_col = 0)
-    df["date"] = pd.to_datetime(df["date"])
-
+    df["date"] = pd.to_datetime(df["date"])    
     get_count_csv(df)
     get_week_countrate_plot(df, start, end)
+    print('Running Week count plot...')
     get_week_count_plot(df, start, end)
+    print('Running Week ratio plot...')
     get_week_ratio_plot(df, start, end)

@@ -9,3 +9,4 @@ Outputs
 *.pickle
 *.html
 *.tar.gz
+*.pyc
