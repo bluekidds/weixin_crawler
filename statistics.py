@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
 		Statistic(df_keyword, str(start) + "~" + str(end) + "_statistic_keyword")
 
-	get_sentiment(start, end, wanted_word, dbutils, GET_KEYWORDS)
+	#get_sentiment(start, end, wanted_word, dbutils, GET_KEYWORDS)
 
 	os.remove(os.path.join(base_path, "output.csv"))
 	os.remove(os.path.join(base_path, "keywords_output.csv"))
