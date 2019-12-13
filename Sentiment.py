@@ -151,6 +151,7 @@ def get_sentiment(start, end, wanted_word, dbutils, GET_KEYWORDS):
                     
 
     hr_raw = pd.DataFrame(all_articles)
+    
     hr_cut = hr_raw[hr_raw["content"].str.contains(wanted_word)]
     
     
