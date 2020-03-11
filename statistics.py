@@ -3,7 +3,7 @@ from datetime                        import date, timedelta
 from Sentiment                       import get_sentiment
 from multiprocessing                 import Queue, Process, Lock, Manager, Value, cpu_count
 from utility.DBUtility               import DBUtility
-from utility.Mail                    import Send_Mail
+#from utility.Mail                    import Send_Mail
 from matplotlib.ticker               import PercentFormatter
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
 import numpy             as np
@@ -20,7 +20,7 @@ wanted_word = "香港"
 
 export_dir = "Outputs"
 
-start = date(2019, 10, 1)
+start = date(2019, 12, 1)
 # end = date(2019, 9 ,13)
 
 #start = date.today() - timedelta(days = 7)
@@ -205,5 +205,5 @@ if __name__ == '__main__':
 
 	os.remove(os.path.join(base_path, "output.csv"))
 	os.remove(os.path.join(base_path, "keywords_output.csv"))
-	print('Starting to send mail')
-	Send_Mail(start, end)
+	#print('Starting to send mail')
+	#Send_Mail(start, end)
